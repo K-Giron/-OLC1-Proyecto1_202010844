@@ -1,0 +1,110 @@
+
+// ------------  Paquete e importaciones ------------
+package statpy;
+
+import java_cup.runtime.*;
+
+
+//------> Codigo para el parser
+//------> Declaracion de variables, funciones y funciones de error
+
+parser code 
+{:
+    public static String resultado = ""; 
+
+    public void syntax_error(Symbol s)
+    {
+        System.err.println("Error Sintactico: "+ s.value + " - Fila: " + s.right + " - Columna: " + s.left + ". Recuperado" );
+        
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
+    {
+        System.err.println("Error Sintactico: "+ s.value + " - Fila: " + s.right + " - Columna: " + s.left + ". Sin recuperacion." );
+
+}
+
+:}
+
+
+//------> Codigo para las acciones gramaticales (no tocar)
+action code
+{:  :}
+
+
+//------> Declaración de terminales
+terminal String ENTERO,ID;
+terminal String AND,OR,NOT;
+terminal String POR, MAS, IGUAL,DIVISION,MENOS,TRUE,FALSE;
+terminal String MAYOR, MENOR, MAYORIGUAL,MENORIGUAL,IGUALIGUAL,DISTINTO;
+terminal String PARENTESIS_A, PARENTESIS_C,TEXTOENTRECOMILLAS;
+terminal String PUNTOYCOMA, PUNTO;
+terminal String MOSTRAR,CONSOLE,WRITE;
+
+
+//------> Declaración de no terminales
+non terminal inicio;
+non terminal instr_mostrar, asignacion, impresion;
+non terminal lista_instr;
+non terminal instruccion;
+non terminal expresion;
+
+//------> precedencia
+precedence left AND,OR;
+precedence left IGUALIGUAL,DISTINTO;
+precedence left MAYOR,MENOR,MAYORIGUAL,MENORIGUAL;
+precedence left MAS,MENOS;
+precedence left POR,DIVISION;
+
+
+//------> Definir Simbolo Inicial
+start with inicio; 
+
+
+// ------------>  Producciones  <------------
+
+inicio ::= lista_instr
+;
+
+lista_instr ::= lista_instr instruccion
+        | instruccion
+;
+
+instruccion::= instr_mostrar PUNTOYCOMA
+    | asignacion PUNTOYCOMA
+    | impresion:val PUNTOYCOMA                      {: statpy.Parser.resultado= statpy.Parser.resultado+val.toString()+" \n" ; :}
+    | error PUNTOYCOMA
+;
+
+impresion ::= CONSOLE PUNTO WRITE PARENTESIS_A expresion:val PARENTESIS_C  
+                        {: RESULT= "print("+ val.toString()+")";  :}
+;
+
+asignacion ::= ID:nombre IGUAL expresion:var           {:  :}
+;
+
+instr_mostrar::= MOSTRAR PARENTESIS_A expresion:val PARENTESIS_C  
+                {: statpy.Parser.resultado= statpy.Parser.resultado+"print("+val.toString()+")\n"; :}
+;
+
+expresion::= expresion:a MAS expresion:b                {: RESULT=a.toString()+" + "+b.toString(); :}
+        | expresion:a POR expresion:b                {: RESULT=a.toString()+" * "+b.toString(); :}
+        | expresion:a DIVISION expresion:b                {: RESULT=a.toString()+" / "+b.toString(); :}
+        | expresion:a MENOS expresion:b                {: RESULT=a.toString()+" - "+b.toString(); :}
+        | expresion:a MAYOR expresion:b                {: RESULT=a.toString()+" > "+b.toString(); :}
+        | expresion:a MENOR expresion:b                {: RESULT=a.toString()+" < "+b.toString(); :}
+        | expresion:a MAYORIGUAL expresion:b                {: RESULT=a.toString()+" >= "+b.toString(); :}
+        | expresion:a MENORIGUAL expresion:b                {: RESULT=a.toString()+" <= "+b.toString(); :}
+        | expresion:a IGUALIGUAL expresion:b                {: RESULT=a.toString()+" == "+b.toString(); :}
+        | expresion:a DISTINTO expresion:b                {: RESULT=a.toString()+" != "+b.toString(); :}
+        | NOT:val expresion:a                                     {: RESULT = " not "+a.toString(); :}
+        | expresion:a AND expresion:b                {: RESULT=a.toString()+" and "+b.toString(); :}
+        | expresion:a OR expresion:b                {: RESULT=a.toString()+" or "+b.toString(); :}
+        | TRUE:val                                 {: RESULT =val; :}
+        | FALSE:val                  {: RESULT = val; :}
+        | ENTERO:val                                    {: RESULT = val; :}
+        | ID:val                                        {: RESULT = val; :}
+        | TEXTOENTRECOMILLAS:val       {: RESULT = val; :}
+        
+        
+;
