@@ -15,13 +15,15 @@ parser code
     public void syntax_error(Symbol s)
     {
         System.err.println("Error Sintactico: "+ s.value + " - Fila: " + s.right + " - Columna: " + s.left + ". Recuperado" );
-        
+        data.Info.listaErrores.add(new data.Error("Error Sintactico", "No reconocido el caracter: "+ s.value,
+                s.right, s.left));
     }
 
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
     {
         System.err.println("Error Sintactico: "+ s.value + " - Fila: " + s.right + " - Columna: " + s.left + ". Sin recuperacion." );
-
+        data.Info.listaErrores.add(new data.Error("Error Sintactico", "No reconocido el caracter: "+ s.value,
+                s.right, s.left));
 }
 
 :}
@@ -33,19 +35,20 @@ action code
 
 
 //------> Declaración de terminales
-terminal String ENTERO,ID;
+terminal String ENTERO,ID,DECIMAL;
 terminal String AND,OR,NOT;
 terminal String POR, MAS, IGUAL,DIVISION,MENOS,TRUE,FALSE;
 terminal String MAYOR, MENOR, MAYORIGUAL,MENORIGUAL,IGUALIGUAL,DISTINTO;
-terminal String PARENTESIS_A, PARENTESIS_C,TEXTOENTRECOMILLAS;
-terminal String PUNTOYCOMA, PUNTO;
+terminal String PARENTESIS_A, PARENTESIS_C,TEXTOENTRECOMILLAS,LLAVE_A,LLAVE_C;
+terminal String PUNTOYCOMA, PUNTO,APOSTROFE;
 terminal String MOSTRAR,CONSOLE,WRITE;
-
+terminal String IF,ELSE;
+terminal String INT,DOUBLE,CHAR,BOOL,STRING;
 
 //------> Declaración de no terminales
 non terminal inicio;
-non terminal instr_mostrar, asignacion, impresion;
-non terminal lista_instr;
+non terminal asignacion, impresion,tipo_if;
+non terminal lista_instr,instr_if;
 non terminal instruccion;
 non terminal expresion;
 
@@ -70,8 +73,8 @@ lista_instr ::= lista_instr instruccion
         | instruccion
 ;
 
-instruccion::= instr_mostrar PUNTOYCOMA
-    | asignacion PUNTOYCOMA
+instruccion::= tipo_if:val                                                       {:  :}   
+    | asignacion:val PUNTOYCOMA                          {: statpy.Parser.resultado= statpy.Parser.resultado+val.toString()+" \n" ;:}
     | impresion:val PUNTOYCOMA                      {: statpy.Parser.resultado= statpy.Parser.resultado+val.toString()+" \n" ; :}
     | error PUNTOYCOMA
 ;
@@ -79,13 +82,24 @@ instruccion::= instr_mostrar PUNTOYCOMA
 impresion ::= CONSOLE PUNTO WRITE PARENTESIS_A expresion:val PARENTESIS_C  
                         {: RESULT= "print("+ val.toString()+")";  :}
 ;
+tipo_if::= instr_if lista_instr LLAVE_C                               
+;
+instr_if ::= IF:val PARENTESIS_A expresion:var PARENTESIS_C LLAVE_A
+                            {: statpy.Parser.resultado += val.toString()+" " + var.toString() + ":\n"; :}  
+                | ELSE:val LLAVE_A
+                            {: statpy.Parser.resultado += val.toString()+ ":\n"; :}  
+                | ELSE IF:val PARENTESIS_A expresion:var PARENTESIS_C LLAVE_A
+                            {: statpy.Parser.resultado += "elif "+var.toString()+ ":\n"; :}  
+; 
 
-asignacion ::= ID:nombre IGUAL expresion:var           {:  :}
+asignacion ::= INT ID:nombre IGUAL:signo expresion:var           {: RESULT= nombre.toString()+" "+signo.toString()+" "+var.toString(); :}
+                    | DOUBLE ID:nombre IGUAL:signo expresion:var           {: RESULT= nombre.toString()+" "+signo.toString()+" "+var.toString(); :}
+                    | CHAR ID:nombre IGUAL:signo expresion:var           {: RESULT= nombre.toString()+" "+signo.toString()+" "+var.toString(); :}
+                    | BOOL ID:nombre IGUAL:signo expresion:var           {: RESULT= nombre.toString()+" "+signo.toString()+" "+var.toString(); :}
+                    | STRING ID:nombre IGUAL:signo expresion:var           {: RESULT= nombre.toString()+" "+signo.toString()+" "+var.toString(); :}
+                    
 ;
 
-instr_mostrar::= MOSTRAR PARENTESIS_A expresion:val PARENTESIS_C  
-                {: statpy.Parser.resultado= statpy.Parser.resultado+"print("+val.toString()+")\n"; :}
-;
 
 expresion::= expresion:a MAS expresion:b                {: RESULT=a.toString()+" + "+b.toString(); :}
         | expresion:a POR expresion:b                {: RESULT=a.toString()+" * "+b.toString(); :}
@@ -103,6 +117,7 @@ expresion::= expresion:a MAS expresion:b                {: RESULT=a.toString()+"
         | TRUE:val                                 {: RESULT =val; :}
         | FALSE:val                  {: RESULT = val; :}
         | ENTERO:val                                    {: RESULT = val; :}
+        | DECIMAL:val                                    {: RESULT = val; :}
         | ID:val                                        {: RESULT = val; :}
         | TEXTOENTRECOMILLAS:val       {: RESULT = val; :}
         
