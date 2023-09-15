@@ -41,14 +41,14 @@ terminal String POR, MAS, IGUAL,DIVISION,MENOS,TRUE,FALSE;
 terminal String MAYOR, MENOR, MAYORIGUAL,MENORIGUAL,IGUALIGUAL,DISTINTO;
 terminal String PARENTESIS_A, PARENTESIS_C,TEXTOENTRECOMILLAS,LLAVE_A,LLAVE_C;
 terminal String PUNTOYCOMA, PUNTO,APOSTROFE;
-terminal String MOSTRAR,CONSOLE,WRITE;
-terminal String IF,ELSE;
+terminal String CONSOLE,WRITE;
+terminal String IF,ELSE,WHILE;
 terminal String INT,DOUBLE,CHAR,BOOL,STRING;
 
 //------> Declaración de no terminales
 non terminal inicio;
-non terminal asignacion, impresion,tipo_if;
-non terminal lista_instr,instr_if;
+non terminal asignacion, impresion,tipo_if,tipo_while;
+non terminal lista_instr,instr_if,instr_while;
 non terminal instruccion;
 non terminal expresion;
 
@@ -73,7 +73,8 @@ lista_instr ::= lista_instr instruccion
         | instruccion
 ;
 
-instruccion::= tipo_if:val                                                       {:  :}   
+instruccion::= tipo_if:val                                                       {:  :}
+    | tipo_while                                                                        {: :}
     | asignacion:val PUNTOYCOMA                          {: statpy.Parser.resultado= statpy.Parser.resultado+val.toString()+" \n" ;:}
     | impresion:val PUNTOYCOMA                      {: statpy.Parser.resultado= statpy.Parser.resultado+val.toString()+" \n" ; :}
     | error PUNTOYCOMA
@@ -90,7 +91,12 @@ instr_if ::= IF:val PARENTESIS_A expresion:var PARENTESIS_C LLAVE_A
                             {: statpy.Parser.resultado += val.toString()+ ":\n"; :}  
                 | ELSE IF:val PARENTESIS_A expresion:var PARENTESIS_C LLAVE_A
                             {: statpy.Parser.resultado += "elif "+var.toString()+ ":\n"; :}  
+;
+tipo_while::= instr_while lista_instr LLAVE_C                               
 ; 
+instr_while ::= WHILE:val PARENTESIS_A expresion:var PARENTESIS_C LLAVE_A 
+                            {: statpy.Parser.resultado += val.toString()+" " + var.toString() + ":\n"; :}
+;
 
 asignacion ::= INT ID:nombre IGUAL:signo expresion:var           {: RESULT= nombre.toString()+" "+signo.toString()+" "+var.toString(); :}
                     | DOUBLE ID:nombre IGUAL:signo expresion:var           {: RESULT= nombre.toString()+" "+signo.toString()+" "+var.toString(); :}
@@ -120,6 +126,7 @@ expresion::= expresion:a MAS expresion:b                {: RESULT=a.toString()+"
         | DECIMAL:val                                    {: RESULT = val; :}
         | ID:val                                        {: RESULT = val; :}
         | TEXTOENTRECOMILLAS:val       {: RESULT = val; :}
+        | TEXTOENTRECOMILLAS:val MAS expresion:a       {: RESULT =val.toString()+" , "+a.toString(); :}
         
         
 ;

@@ -48,6 +48,7 @@ textoentrecomillas=[\"]([^\"\n]|(\\\"))*[\"]
 "!"         { return new Symbol(sym.NOT, yycolumn, yyline, yytext());} 
 
 //   --- Palabras y variables
+"while"    { return new Symbol(sym.WHILE, yycolumn, yyline, yytext());} 
 "if"        { return new Symbol(sym.IF, yycolumn, yyline, yytext());} 
 "else"    { return new Symbol(sym.ELSE, yycolumn, yyline, yytext());} 
 
@@ -62,7 +63,6 @@ textoentrecomillas=[\"]([^\"\n]|(\\\"))*[\"]
 
 
 "="         { return new Symbol(sym.IGUAL, yycolumn, yyline, yytext());}
-"mostrar"   { return new Symbol(sym.MOSTRAR, yycolumn, yyline, yytext());}
 "console"   { return new Symbol(sym.CONSOLE, yycolumn, yyline, yytext());}
 "write"     { return new Symbol(sym.WRITE, yycolumn, yyline, yytext());}
 "true"   { return new Symbol(sym.TRUE, yycolumn, yyline, yytext());}

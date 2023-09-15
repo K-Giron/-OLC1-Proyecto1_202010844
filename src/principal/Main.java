@@ -31,6 +31,9 @@ public class Main {
                        char decimales=10*2;
                        int enteros = simpleEntero + 2 - 2 * 2 / 2;
                        double decimales = 2.0 - 3.4;
+                       while(a < 10){
+                       Console.Write("el valor de a es: " + 500);
+                       }
                        """;
         
         analizar(entrada);
