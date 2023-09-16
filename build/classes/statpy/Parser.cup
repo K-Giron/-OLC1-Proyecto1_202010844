@@ -40,15 +40,16 @@ terminal String AND,OR,NOT;
 terminal String POR, MAS, IGUAL,DIVISION,MENOS,TRUE,FALSE;
 terminal String MAYOR, MENOR, MAYORIGUAL,MENORIGUAL,IGUALIGUAL,DISTINTO;
 terminal String PARENTESIS_A, PARENTESIS_C,TEXTOENTRECOMILLAS,LLAVE_A,LLAVE_C;
-terminal String PUNTOYCOMA, PUNTO,APOSTROFE;
+terminal String PUNTOYCOMA, PUNTO,APOSTROFE,DOSPUNTOS;
 terminal String CONSOLE,WRITE;
-terminal String IF,ELSE,WHILE;
+terminal String IF,ELSE,WHILE,DO,FOR,SWITCH,CASE,DEFAULT,BREAK,VOID,MAIN;
 terminal String INT,DOUBLE,CHAR,BOOL,STRING;
 
 //------> Declaración de no terminales
 non terminal inicio;
-non terminal asignacion, impresion,tipo_if,tipo_while;
-non terminal lista_instr,instr_if,instr_while;
+non terminal asignacion, impresion,tipo_if,tipo_while,tipo_for,tipo_dato,tipo_switch,tipo_void;
+non terminal lista_instr,instr_if,instr_while,instr_do,instr_for,instr_switch,instr_case,instr_void;
+non terminal comparadores;
 non terminal instruccion;
 non terminal expresion;
 
@@ -75,6 +76,9 @@ lista_instr ::= lista_instr instruccion
 
 instruccion::= tipo_if:val                                                       {:  :}
     | tipo_while                                                                        {: :}
+    | tipo_for                                                                  {: :}
+    | tipo_switch                                                           {: :}
+    | tipo_void                                                               {: :}
     | asignacion:val PUNTOYCOMA                          {: statpy.Parser.resultado= statpy.Parser.resultado+val.toString()+" \n" ;:}
     | impresion:val PUNTOYCOMA                      {: statpy.Parser.resultado= statpy.Parser.resultado+val.toString()+" \n" ; :}
     | error PUNTOYCOMA
@@ -92,20 +96,51 @@ instr_if ::= IF:val PARENTESIS_A expresion:var PARENTESIS_C LLAVE_A
                 | ELSE IF:val PARENTESIS_A expresion:var PARENTESIS_C LLAVE_A
                             {: statpy.Parser.resultado += "elif "+var.toString()+ ":\n"; :}  
 ;
-tipo_while::= instr_while lista_instr LLAVE_C                               
+tipo_while::= instr_while lista_instr LLAVE_C
+                    |  instr_do lista_instr LLAVE_C WHILE PARENTESIS_A expresion:var PARENTESIS_C PUNTOYCOMA
+                            {: statpy.Parser.resultado += var.toString()+" " + ":\n"; :}
+                        
 ; 
 instr_while ::= WHILE:val PARENTESIS_A expresion:var PARENTESIS_C LLAVE_A 
                             {: statpy.Parser.resultado += val.toString()+" " + var.toString() + ":\n"; :}
 ;
-
-asignacion ::= INT ID:nombre IGUAL:signo expresion:var           {: RESULT= nombre.toString()+" "+signo.toString()+" "+var.toString(); :}
-                    | DOUBLE ID:nombre IGUAL:signo expresion:var           {: RESULT= nombre.toString()+" "+signo.toString()+" "+var.toString(); :}
-                    | CHAR ID:nombre IGUAL:signo expresion:var           {: RESULT= nombre.toString()+" "+signo.toString()+" "+var.toString(); :}
-                    | BOOL ID:nombre IGUAL:signo expresion:var           {: RESULT= nombre.toString()+" "+signo.toString()+" "+var.toString(); :}
-                    | STRING ID:nombre IGUAL:signo expresion:var           {: RESULT= nombre.toString()+" "+signo.toString()+" "+var.toString(); :}
-                    
+instr_do ::= DO:val LLAVE_A        {: statpy.Parser.resultado += "while"+" " + ":\n"; :}
 ;
 
+tipo_for::= instr_for lista_instr LLAVE_C
+;
+
+instr_for::= FOR:pal PARENTESIS_A tipo_dato ID:nombre IGUAL:signo ENTERO:ini PUNTOYCOMA ID comparadores:var ENTERO:fin PUNTOYCOMA ID MAS MAS PARENTESIS_C LLAVE_A
+                    {: statpy.Parser.resultado += pal.toString()+" " + nombre.toString() +" in range("+ ini.toString()+","+fin.toString()+")"+ ":\n";  :}
+;
+
+tipo_switch ::= SWITCH PARENTESIS_A expresion:var PARENTESIS_C LLAVE_A instr_switch LLAVE_C
+;
+instr_switch ::= instr_switch instr_case
+                        | instr_case  
+;
+instr_case::= CASE ENTERO DOSPUNTOS ID IGUAL ENTERO PUNTOYCOMA lista_instr
+                     | CASE ENTERO DOSPUNTOS ID IGUAL ENTERO PUNTOYCOMA
+                     | DEFAULT DOSPUNTOS lista_instr
+; 
+tipo_dato::=INT:val                                         {:  :}
+                | DOUBLE:val                                {: :}
+                | CHAR:val                                     {:  :}
+                | BOOL:val                                      {:  :}
+                | STRING:val                                   {: :}
+;
+tipo_void::= instr_void lista_instr LLAVE_C
+;
+instr_void::= VOID:val MAIN:var PARENTESIS_A PARENTESIS_C LLAVE_A {: statpy.Parser.resultado +="def"+" " +var.toString()+ "():\n"; :}
+;
+asignacion ::= tipo_dato ID:nombre IGUAL:signo expresion:var           {: RESULT= nombre.toString()+" "+signo.toString()+" "+var.toString(); :}
+      
+;
+comparadores::= MENORIGUAL
+                            | MAYOR
+                            | MENOR
+                            | MAYORIGUAL
+;
 
 expresion::= expresion:a MAS expresion:b                {: RESULT=a.toString()+" + "+b.toString(); :}
         | expresion:a POR expresion:b                {: RESULT=a.toString()+" * "+b.toString(); :}

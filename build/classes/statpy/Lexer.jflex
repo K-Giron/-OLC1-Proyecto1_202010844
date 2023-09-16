@@ -48,15 +48,24 @@ textoentrecomillas=[\"]([^\"\n]|(\\\"))*[\"]
 "!"         { return new Symbol(sym.NOT, yycolumn, yyline, yytext());} 
 
 //   --- Palabras y variables
-"while"    { return new Symbol(sym.WHILE, yycolumn, yyline, yytext());} 
+"while"    { return new Symbol(sym.WHILE, yycolumn, yyline, yytext());}
+"do"    { return new Symbol(sym.DO, yycolumn, yyline, yytext());}  
 "if"        { return new Symbol(sym.IF, yycolumn, yyline, yytext());} 
 "else"    { return new Symbol(sym.ELSE, yycolumn, yyline, yytext());} 
+"for"    { return new Symbol(sym.FOR, yycolumn, yyline, yytext());} 
+"switch"    { return new Symbol(sym.SWITCH, yycolumn, yyline, yytext());}
+"case"      { return new Symbol(sym.CASE, yycolumn, yyline, yytext());}
+"default"   { return new Symbol(sym.DEFAULT, yycolumn, yyline, yytext());}
+"break"     { return new Symbol(sym.BREAK, yycolumn, yyline, yytext());}
+"void"     { return new Symbol(sym.VOID, yycolumn, yyline, yytext());}
+"main"     { return new Symbol(sym.MAIN, yycolumn, yyline, yytext());}
 
 
 "("         { return new Symbol(sym.PARENTESIS_A, yycolumn, yyline, yytext());}
 ")"         { return new Symbol(sym.PARENTESIS_C, yycolumn, yyline, yytext());}
 ";"         { return new Symbol(sym.PUNTOYCOMA, yycolumn, yyline, yytext());}
 "."         { return new Symbol(sym.PUNTO, yycolumn, yyline, yytext());  }
+":"         { return new Symbol(sym.DOSPUNTOS, yycolumn, yyline, yytext());  }
 "\'"        { return new Symbol(sym.APOSTROFE, yycolumn, yyline, yytext());  }
 "{"        { return new Symbol(sym.LLAVE_A, yycolumn, yyline, yytext());  }
 "}"        { return new Symbol(sym.LLAVE_C, yycolumn, yyline, yytext());  }

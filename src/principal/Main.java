@@ -11,31 +11,29 @@ public class Main {
         //analizadores("src/statpy/", "Lexer.jflex","Parser.cup");
         
         String entrada="""
-                       int variable=10;
-                       if(true){
-                            Console.Write(10);
-                            Console.Write( False || FALSE );
-                            Console.write(7 || 44);
-                                       if(4*2>3){
-                                        Console.Write(True   || False   && ! False <3 +2 && 2.5>=7||3!=5||enteros==7);
-                                         }else{
-                                                    Console.Write(" Hola esto es una prueba");
-                                                    else if(a==b){
-                                                                Console.Write(" Hola esto es una prueba");
-                                                                Console.Write(True   || False   && ! False <3 +2 && 2.5>=7||3!=5||enteros==7);
-                                                                 }
-                                        }
-                                         
+                       void main(){
+                       switch(valor){
+                       case 1:
+                            precio = 55;
+                       Console.Write("el valor de a es: " + a);
+                       case 2:
+                            precio = 25;
+                       Console.Write("el valor de a es: " + a);
+                       case 3:
+                            precio = 40;
+                       default:
+                            Console.Write("No válido. Escoja 1, 2, o 3.");
                        }
-                       DOUBLE variable=10.0;
-                       char decimales=10*2;
+                       for (int a=0; a<10; a++){
+                       Console.Write("el valor de a es: " + a);
+                       }
                        int enteros = simpleEntero + 2 - 2 * 2 / 2;
                        double decimales = 2.0 - 3.4;
                        while(a < 10){
                        Console.Write("el valor de a es: " + 500);
                        }
+                       }
                        """;
-        
         analizar(entrada);
         System.out.println(statpy.Parser.resultado);
         
