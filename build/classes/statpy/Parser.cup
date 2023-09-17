@@ -44,6 +44,7 @@ terminal String PUNTOYCOMA, PUNTO,APOSTROFE,DOSPUNTOS;
 terminal String CONSOLE,WRITE;
 terminal String IF,ELSE,WHILE,DO,FOR,SWITCH,CASE,DEFAULT,BREAK,VOID,MAIN;
 terminal String INT,DOUBLE,CHAR,BOOL,STRING;
+terminal String GRABARRAS;
 
 //------> Declaración de no terminales
 non terminal inicio;
@@ -51,7 +52,7 @@ non terminal print_switch,print_case,print_default;
 non terminal asignacion, impresion,tipo_if,tipo_while,tipo_for,tipo_dato,tipo_switch,tipo_void,tipo_break;
 non terminal lista_instr,instr_if,instr_while,instr_do,instr_for,instr_switch,instr_case,instr_void;
 non terminal comparadores;
-non terminal instruccion;
+non terminal instruccion,tipo_void_est ;
 non terminal expresion;
 
 //------> precedencia
@@ -80,6 +81,7 @@ instruccion::= tipo_if:val                                                      
     | tipo_for                                                                  {: :}
     | tipo_switch                                                           {: :}
     | tipo_void                                                               {: :}
+    | tipo_void_est                                                         {: :}
     | tipo_break PUNTOYCOMA                                                     {: :}
     | asignacion:val PUNTOYCOMA                          {: statpy.Parser.resultado= statpy.Parser.resultado+val.toString()+" \n" ;:}
     | impresion:val PUNTOYCOMA                      {: statpy.Parser.resultado= statpy.Parser.resultado+val.toString()+" \n" ; :}
@@ -181,3 +183,4 @@ expresion::= expresion:a MAS expresion:b                {: RESULT=a.toString()+"
         | TCHAR: val                                    {: RESULT = val; :}
 
 ;
+

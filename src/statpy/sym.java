@@ -16,6 +16,7 @@ public class sym {
   public static final int TCHAR = 5;
   public static final int ENTERO = 2;
   public static final int CASE = 39;
+  public static final int GRABARRAS = 49;
   public static final int DOUBLE = 45;
   public static final int INT = 44;
   public static final int LLAVE_C = 26;
@@ -106,7 +107,8 @@ public class sym {
   "DOUBLE",
   "CHAR",
   "BOOL",
-  "STRING"
+  "STRING",
+  "GRABARRAS"
   };
 }
 

@@ -8,39 +8,12 @@ public class Main {
 
 
     public static void main(String[] args) {
-        //analizadores("src/statpy/", "Lexer.jflex","Parser.cup");
-        //analizadores("src/jsonn/", "Lexer.jflex","Parser.cup");
-                
-        String entrada="""
-                       /*
-                       
-                       Carga de tercer objeto json archivo dificil
-                       
-                       */
-                       
-                       {
-                       	"titulo2":"Reporte 2 DIFICIL",
-                           "v1":"prob1",
-                           "v2":"prob2",
-                           "v3":"prob3",
-                           "p1":20.8,
-                           "p2":30.4
-                       dsfdsfdsf
-
-                       }
-                       """;
-        analizarJson(entrada);
-        System.out.println(statpy.Parser.resultado);
-        System.out.println(jsonn.Parser.resultado);
-        data.Info.reporteJson();
-        for(String i: data.Info.listaVariables.keySet()){
-            System.out.println("key: "+i+" - value: "+data.Info.listaVariables.get(i));
-        }
+        analizadores("src/statpy/", "Lexer.jflex","Parser.cup");
+        analizadores("src/jsonn/", "Lexer.jflex","Parser.cup");
         
-        System.out.println("ERRORES ######################");
-        data.Info.listaErroresStatpy.forEach((t)->{
-            System.out.println(t.toString());
-        });
+       Ventana ventana = new Ventana();
+        ventana.setVisible(true);        
+
     }
    
     

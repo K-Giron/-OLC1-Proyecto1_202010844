@@ -715,7 +715,7 @@ public class Lexer implements java_cup.runtime.Scanner {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
             { System.out.println("Error Lexico: " + yytext() + " | Fila:" + yyline + " | Columna: " + yycolumn);
-                    data.Info.listaErroresJson.add(new data.Error("Error Lexico", "No reconocido el caracter "+ yytext() ,
+                    data.Info.listaErroresJson.add(new data.Error("Error Lexico", "No reconocido el caracter: "+ yytext() ,
                     yyline, yycolumn));
             }
           // fall through

@@ -20,8 +20,8 @@ public class Error {
     @Override
     public  String toString() {
         String contenido = "<tr>\n" +
-"            <td>"+ this.tipo +"</td>\n" +
 "            <td>"+ this.descripcion +"</td>\n" +
+"            <td>"+ this.tipo +"</td>\n" +
 "            <td>"+ this.linea +"</td>\n" +
 "            <td>"+ this.columna +"</td>\n" +
 "            </tr>\n";

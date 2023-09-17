@@ -54,7 +54,7 @@ comentariomultiple=\/\/.|\/\*[\s\S]*?\*\/
 
 //------> Errores Léxicos 
 .           	{ System.out.println("Error Lexico: " + yytext() + " | Fila:" + yyline + " | Columna: " + yycolumn);
-                    data.Info.listaErroresJson.add(new data.Error("Error Lexico", "No reconocido el caracter "+ yytext() ,
+                    data.Info.listaErroresJson.add(new data.Error("Error Lexico", "No reconocido el caracter: "+ yytext() ,
                     yyline, yycolumn));
                      }
 

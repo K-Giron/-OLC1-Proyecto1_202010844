@@ -5,11 +5,13 @@
         <group>
             <file>file:/C:/Users/kevin/Documents/NetBeansProjects/Proyecto_1/src/principal/Main.java</file>
             <file>file:/C:/Users/kevin/Documents/NetBeansProjects/Proyecto_1/src/data/Error.java</file>
-            <file>file:/C:/Users/kevin/Documents/NetBeansProjects/Proyecto_1/src/jsonn/Lexer.java</file>
+            <file>file:/C:/Users/kevin/Documents/NetBeansProjects/Proyecto_1/src/principal/Ventana.java</file>
+            <file>file:/C:/Users/kevin/Documents/NetBeansProjects/Proyecto_1/src/statpy/Lexer.jflex</file>
+            <file>file:/C:/Users/kevin/Documents/NetBeansProjects/Proyecto_1/src/statpy/Parser.cup</file>
             <file>file:/C:/Users/kevin/Documents/NetBeansProjects/Proyecto_1/src/data/Info.java</file>
-            <file>file:/C:/Users/kevin/Documents/NetBeansProjects/Proyecto_1/src/jsonn/Parser.cup</file>
+            <file>file:/C:/Users/kevin/Documents/NetBeansProjects/Proyecto_1/src/statpy/Lexer.java</file>
             <file>file:/C:/Users/kevin/Documents/NetBeansProjects/Proyecto_1/src/jsonn/Lexer.jflex</file>
-            <file>file:/C:/Users/kevin/Documents/NetBeansProjects/Proyecto_1/src/jsonn/Parser.java</file>
+            <file>file:/C:/Users/kevin/Documents/NetBeansProjects/Proyecto_1/src/data/Graficar.java</file>
         </group>
     </open-files>
 </project-private>
