@@ -10,5 +10,6 @@ import java.util.LinkedList;
 public class Info {
     public static LinkedList<Error> listaErrores = new LinkedList<>();
     public static HashMap<String, String > listaVariables= new HashMap<>();
+    public static int ultimoCase=0;
 
 }

@@ -35,7 +35,7 @@ action code
 
 
 //------> Declaración de terminales
-terminal String ENTERO,ID,DECIMAL;
+terminal String ENTERO,ID,DECIMAL,TCHAR;
 terminal String AND,OR,NOT;
 terminal String POR, MAS, IGUAL,DIVISION,MENOS,TRUE,FALSE;
 terminal String MAYOR, MENOR, MAYORIGUAL,MENORIGUAL,IGUALIGUAL,DISTINTO;
@@ -47,7 +47,8 @@ terminal String INT,DOUBLE,CHAR,BOOL,STRING;
 
 //------> Declaración de no terminales
 non terminal inicio;
-non terminal asignacion, impresion,tipo_if,tipo_while,tipo_for,tipo_dato,tipo_switch,tipo_void;
+non terminal print_switch,print_case,print_default;
+non terminal asignacion, impresion,tipo_if,tipo_while,tipo_for,tipo_dato,tipo_switch,tipo_void,tipo_break;
 non terminal lista_instr,instr_if,instr_while,instr_do,instr_for,instr_switch,instr_case,instr_void;
 non terminal comparadores;
 non terminal instruccion;
@@ -79,6 +80,7 @@ instruccion::= tipo_if:val                                                      
     | tipo_for                                                                  {: :}
     | tipo_switch                                                           {: :}
     | tipo_void                                                               {: :}
+    | tipo_break PUNTOYCOMA                                                     {: :}
     | asignacion:val PUNTOYCOMA                          {: statpy.Parser.resultado= statpy.Parser.resultado+val.toString()+" \n" ;:}
     | impresion:val PUNTOYCOMA                      {: statpy.Parser.resultado= statpy.Parser.resultado+val.toString()+" \n" ; :}
     | error PUNTOYCOMA
@@ -114,14 +116,24 @@ instr_for::= FOR:pal PARENTESIS_A tipo_dato ID:nombre IGUAL:signo ENTERO:ini PUN
                     {: statpy.Parser.resultado += pal.toString()+" " + nombre.toString() +" in range("+ ini.toString()+","+fin.toString()+")"+ ":\n";  :}
 ;
 
-tipo_switch ::= SWITCH PARENTESIS_A expresion:var PARENTESIS_C LLAVE_A instr_switch LLAVE_C
+tipo_switch ::= print_switch instr_switch LLAVE_C
+;
+print_switch::= SWITCH:val PARENTESIS_A expresion:var PARENTESIS_C LLAVE_A  
+                                {: statpy.Parser.resultado +="def "+ val.toString()+" ("+var.toString()+ "):\n"+"switcher = {\n"; :}
 ;
 instr_switch ::= instr_switch instr_case
                         | instr_case  
 ;
-instr_case::= CASE ENTERO DOSPUNTOS ID IGUAL ENTERO PUNTOYCOMA lista_instr
-                     | CASE ENTERO DOSPUNTOS ID IGUAL ENTERO PUNTOYCOMA
-                     | DEFAULT DOSPUNTOS lista_instr
+instr_case::= print_case lista_instr   
+                     | print_case
+                     | print_default instruccion            
+;
+print_case::=CASE ENTERO:var DOSPUNTOS ID:val IGUAL ENTERO:var2 PUNTOYCOMA
+                        {: statpy.Parser.resultado +=var.toString()+": "+val.toString()+" = "+var2.toString()+ ",\n";
+                            data.Info.ultimoCase=Integer.parseInt(var);
+                             :}
+;
+print_default::= DEFAULT DOSPUNTOS {: data.Info.ultimoCase++; statpy.Parser.resultado += data.Info.ultimoCase+": "; :}
 ; 
 tipo_dato::=INT:val                                         {:  :}
                 | DOUBLE:val                                {: :}
@@ -133,8 +145,11 @@ tipo_void::= instr_void lista_instr LLAVE_C
 ;
 instr_void::= VOID:val MAIN:var PARENTESIS_A PARENTESIS_C LLAVE_A {: statpy.Parser.resultado +="def"+" " +var.toString()+ "():\n"; :}
 ;
+
+tipo_break::= BREAK:var             {: statpy.Parser.resultado += var.toString()+ "\n";  :}
+;
 asignacion ::= tipo_dato ID:nombre IGUAL:signo expresion:var           {: RESULT= nombre.toString()+" "+signo.toString()+" "+var.toString(); :}
-      
+                        | ID:nombre IGUAL:signo expresion:var           {: RESULT= nombre.toString()+" "+signo.toString()+" "+var.toString(); :}
 ;
 comparadores::= MENORIGUAL
                             | MAYOR
@@ -162,6 +177,6 @@ expresion::= expresion:a MAS expresion:b                {: RESULT=a.toString()+"
         | ID:val                                        {: RESULT = val; :}
         | TEXTOENTRECOMILLAS:val       {: RESULT = val; :}
         | TEXTOENTRECOMILLAS:val MAS expresion:a       {: RESULT =val.toString()+" , "+a.toString(); :}
-        
-        
+        | TCHAR: val                                    {: RESULT = val; :}
+
 ;

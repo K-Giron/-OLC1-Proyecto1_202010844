@@ -26,6 +26,9 @@ entero = [0-9]+
 decimal=[0-9]+(\.[0-9]+)?
 identificador = [a-zA-z][a-zA-z0-9_]*
 textoentrecomillas=[\"]([^\"\n]|(\\\"))*[\"]
+tipo_char='[^'\\n\\r]'
+comentariosimple="//".*
+comentariomultiple="/* "([^/*/]|[^*/]|[^/*/])*"*/"
 
 
 
@@ -84,6 +87,7 @@ textoentrecomillas=[\"]([^\"\n]|(\\\"))*[\"]
 
 
 {entero}  { return new Symbol(sym.ENTERO, yycolumn, yyline, yytext()); }
+{tipo_char}  { return new Symbol(sym.TCHAR, yycolumn, yyline, yytext()); }
 {decimal}  { return new Symbol(sym.DECIMAL, yycolumn, yyline, yytext()); }
 {identificador}  { return new Symbol(sym.ID, yycolumn, yyline, yytext()); }
 {textoentrecomillas} { return new Symbol(sym.TEXTOENTRECOMILLAS, yycolumn, yyline, yytext()); }
@@ -92,6 +96,9 @@ textoentrecomillas=[\"]([^\"\n]|(\\\"))*[\"]
 
 //------> Ignorados 
 [ \t\r\n\f]     {/* Espacios en blanco se ignoran */}
+{comentariosimple} { /* Comentario simple se ignora */ }
+{comentariomultiple} { /* Comentario múltiple se ignora */ }
+
 
 //------> Errores Léxicos 
 .           	{ System.out.println("Error Lexico: " + yytext() + " | Fila:" + yyline + " | Columna: " + yycolumn);
