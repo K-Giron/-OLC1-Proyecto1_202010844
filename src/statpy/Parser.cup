@@ -15,14 +15,14 @@ parser code
     public void syntax_error(Symbol s)
     {
         System.err.println("Error Sintactico: "+ s.value + " - Fila: " + s.right + " - Columna: " + s.left + ". Recuperado" );
-        data.Info.listaErrores.add(new data.Error("Error Sintactico", "No reconocido el caracter: "+ s.value,
+        data.Info.listaErroresStatpy.add(new data.Error("Error Sintactico", "No reconocido el caracter: "+ s.value,
                 s.right, s.left));
     }
 
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
     {
         System.err.println("Error Sintactico: "+ s.value + " - Fila: " + s.right + " - Columna: " + s.left + ". Sin recuperacion." );
-        data.Info.listaErrores.add(new data.Error("Error Sintactico", "No reconocido el caracter: "+ s.value,
+        data.Info.listaErroresStatpy.add(new data.Error("Error Sintactico", "No reconocido el caracter: "+ s.value,
                 s.right, s.left));
 }
 
@@ -150,6 +150,7 @@ tipo_break::= BREAK:var             {: statpy.Parser.resultado += var.toString()
 ;
 asignacion ::= tipo_dato ID:nombre IGUAL:signo expresion:var           {: RESULT= nombre.toString()+" "+signo.toString()+" "+var.toString(); :}
                         | ID:nombre IGUAL:signo expresion:var           {: RESULT= nombre.toString()+" "+signo.toString()+" "+var.toString(); :}
+                        | tipo_dato ID:nombre                                       {: RESULT= nombre.toString(); :}
 ;
 comparadores::= MENORIGUAL
                             | MAYOR

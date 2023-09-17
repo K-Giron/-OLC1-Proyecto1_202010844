@@ -1,0 +1,74 @@
+
+// ------------  Paquete e importaciones ------------
+package jsonn;
+
+import java_cup.runtime.*;
+
+
+//------> Codigo para el parser
+//------> Declaracion de variables, funciones y funciones de error
+
+parser code 
+{:
+    public static String resultado = ""; 
+
+    public void syntax_error(Symbol s)
+    {
+        System.err.println("Error Sintactico: "+ s.value + " - Fila: " + s.right + " - Columna: " + s.left + ". Recuperado" );
+        data.Info.listaErroresJson.add(new data.Error("Error Sintactico", "No reconocido el caracter: "+ s.value,
+                s.right, s.left));
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
+    {
+        System.err.println("Error Sintactico: "+ s.value + " - Fila: " + s.right + " - Columna: " + s.left + ". Sin recuperacion." );
+        data.Info.listaErroresJson.add(new data.Error("Error Sintactico", "No reconocido el caracter: "+ s.value,
+                s.right, s.left));
+}
+
+:}
+
+
+//------> Codigo para las acciones gramaticales (no tocar)
+action code
+{:  :}
+
+
+//------> Declaración de terminales
+terminal String DECIMAL;
+terminal String TEXTOENTRECOMILLAS,LLAVE_A,LLAVE_C;
+terminal String DOSPUNTOS,COMA;
+
+
+//------> Declaración de no terminales
+non terminal inicio;
+non terminal lista_instr;
+non terminal instruccion;
+non terminal expresion;
+//------> precedencia
+precedence left DOSPUNTOS;
+
+//------> Definir Simbolo Inicial
+start with inicio; 
+
+
+// ------------>  Producciones  <------------
+
+inicio ::=LLAVE_A lista_instr LLAVE_C                         
+;
+
+lista_instr ::= lista_instr instruccion
+        | instruccion
+;
+
+instruccion::= expresion:val COMA                          {: jsonn.Parser.resultado= jsonn.Parser.resultado+val.toString()+" \n"; :}
+    | expresion:val                                                         {: jsonn.Parser.resultado= jsonn.Parser.resultado+val.toString()+" \n" ;:}
+    | error COMA
+;
+
+expresion::= expresion:a DOSPUNTOS expresion:b                {: RESULT=a.toString()+" : "+b.toString();
+                                                                                                    data.Info.listaVariables.put(a.toString(), b.toString()); :}
+        | DECIMAL:val                                    {: RESULT = val; :}
+        | TEXTOENTRECOMILLAS:val       {: String[] parte = val.split("\"");
+                                                                    RESULT = parte[1]; :}
+;

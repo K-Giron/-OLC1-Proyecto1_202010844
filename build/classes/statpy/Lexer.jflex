@@ -102,7 +102,7 @@ comentariomultiple="/* "([^/*/]|[^*/]|[^/*/])*"*/"
 
 //------> Errores Léxicos 
 .           	{ System.out.println("Error Lexico: " + yytext() + " | Fila:" + yyline + " | Columna: " + yycolumn);
-                    data.Info.listaErrores.add(new data.Error("Error Lexico", "No reconocido el caracter "+ yytext() ,
+                    data.Info.listaErroresStatpy.add(new data.Error("Error Lexico", "No reconocido el caracter "+ yytext() ,
                     yyline, yycolumn));
                      }
 
