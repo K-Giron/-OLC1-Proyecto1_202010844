@@ -50,7 +50,7 @@ comentariomultiple="/* "([^/*/]|[^*/]|[^/*/])*"*/"
 "||"         { return new Symbol(sym.OR, yycolumn, yyline, yytext());} 
 "!"         { return new Symbol(sym.NOT, yycolumn, yyline, yytext());} 
 
-//   --- Palabras y variables
+
 "while"    { return new Symbol(sym.WHILE, yycolumn, yyline, yytext());}
 "do"    { return new Symbol(sym.DO, yycolumn, yyline, yytext());}  
 "if"        { return new Symbol(sym.IF, yycolumn, yyline, yytext());} 
