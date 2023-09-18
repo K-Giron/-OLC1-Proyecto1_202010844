@@ -49,6 +49,7 @@ comentariomultiple="/* "([^/*/]|[^*/]|[^/*/])*"*/"
 "&&"         { return new Symbol(sym.AND, yycolumn, yyline, yytext());}     
 "||"         { return new Symbol(sym.OR, yycolumn, yyline, yytext());} 
 "!"         { return new Symbol(sym.NOT, yycolumn, yyline, yytext());} 
+"$"         { return new Symbol(sym.DOLAR, yycolumn, yyline, yytext());  }
 
 //   --- Palabras y variables
 "while"    { return new Symbol(sym.WHILE, yycolumn, yyline, yytext());}
@@ -63,7 +64,6 @@ comentariomultiple="/* "([^/*/]|[^*/]|[^/*/])*"*/"
 "void"     { return new Symbol(sym.VOID, yycolumn, yyline, yytext());}
 "main"     { return new Symbol(sym.MAIN, yycolumn, yyline, yytext());}
 
-
 "("         { return new Symbol(sym.PARENTESIS_A, yycolumn, yyline, yytext());}
 ")"         { return new Symbol(sym.PARENTESIS_C, yycolumn, yyline, yytext());}
 ";"         { return new Symbol(sym.PUNTOYCOMA, yycolumn, yyline, yytext());}
@@ -72,6 +72,10 @@ comentariomultiple="/* "([^/*/]|[^*/]|[^/*/])*"*/"
 "\'"        { return new Symbol(sym.APOSTROFE, yycolumn, yyline, yytext());  }
 "{"        { return new Symbol(sym.LLAVE_A, yycolumn, yyline, yytext());  }
 "}"        { return new Symbol(sym.LLAVE_C, yycolumn, yyline, yytext());  }
+"["        { return new Symbol(sym.CORCHETE_A, yycolumn, yyline, yytext());  }
+"]"        { return new Symbol(sym.CORCHETE_C, yycolumn, yyline, yytext());  }
+","        { return new Symbol(sym.COMA, yycolumn, yyline, yytext());  }
+
 
 
 "="         { return new Symbol(sym.IGUAL, yycolumn, yyline, yytext());}
@@ -84,6 +88,9 @@ comentariomultiple="/* "([^/*/]|[^*/]|[^/*/])*"*/"
 "char"     { return new Symbol(sym.CHAR, yycolumn, yyline, yytext());}
 "bool"   { return new Symbol(sym.BOOL, yycolumn, yyline, yytext());}
 "string"     { return new Symbol(sym.STRING, yycolumn, yyline, yytext());}
+"graficabarras" { return new Symbol(sym.GRAFICABARRAS, yycolumn, yyline, yytext());}
+"definirglobales" { return new Symbol(sym.DEFGLOBALES, yycolumn, yyline, yytext());}
+"graficapie" { return new Symbol(sym.GRAPIE, yycolumn, yyline, yytext());}
 
 
 {entero}  { return new Symbol(sym.ENTERO, yycolumn, yyline, yytext()); }

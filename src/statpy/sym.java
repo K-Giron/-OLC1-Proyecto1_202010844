@@ -10,15 +10,17 @@ public class sym {
   /* terminals */
   public static final int DOSPUNTOS = 30;
   public static final int DISTINTO = 21;
+  public static final int GRAPIE = 51;
   public static final int CHAR = 46;
   public static final int POR = 9;
   public static final int PUNTOYCOMA = 27;
   public static final int TCHAR = 5;
   public static final int ENTERO = 2;
   public static final int CASE = 39;
-  public static final int GRABARRAS = 49;
   public static final int DOUBLE = 45;
+  public static final int CORCHETE_C = 53;
   public static final int INT = 44;
+  public static final int CORCHETE_A = 52;
   public static final int LLAVE_C = 26;
   public static final int FOR = 37;
   public static final int LLAVE_A = 25;
@@ -37,6 +39,7 @@ public class sym {
   public static final int DECIMAL = 4;
   public static final int TRUE = 14;
   public static final int error = 1;
+  public static final int COMA = 55;
   public static final int MENOS = 13;
   public static final int MENOR = 17;
   public static final int BREAK = 41;
@@ -45,15 +48,18 @@ public class sym {
   public static final int MAYOR = 16;
   public static final int ELSE = 34;
   public static final int PUNTO = 28;
+  public static final int GRAFICABARRAS = 49;
   public static final int PARENTESIS_C = 23;
   public static final int TEXTOENTRECOMILLAS = 24;
   public static final int IGUALIGUAL = 20;
   public static final int WHILE = 35;
+  public static final int DEFGLOBALES = 50;
   public static final int PARENTESIS_A = 22;
   public static final int DEFAULT = 40;
   public static final int STRING = 48;
   public static final int FALSE = 15;
   public static final int DIVISION = 12;
+  public static final int DOLAR = 54;
   public static final int APOSTROFE = 29;
   public static final int DO = 36;
   public static final int CONSOLE = 31;
@@ -108,7 +114,13 @@ public class sym {
   "CHAR",
   "BOOL",
   "STRING",
-  "GRABARRAS"
+  "GRAFICABARRAS",
+  "DEFGLOBALES",
+  "GRAPIE",
+  "CORCHETE_A",
+  "CORCHETE_C",
+  "DOLAR",
+  "COMA"
   };
 }
 

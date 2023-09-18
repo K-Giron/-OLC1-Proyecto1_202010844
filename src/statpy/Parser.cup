@@ -44,7 +44,7 @@ terminal String PUNTOYCOMA, PUNTO,APOSTROFE,DOSPUNTOS;
 terminal String CONSOLE,WRITE;
 terminal String IF,ELSE,WHILE,DO,FOR,SWITCH,CASE,DEFAULT,BREAK,VOID,MAIN;
 terminal String INT,DOUBLE,CHAR,BOOL,STRING;
-terminal String GRABARRAS;
+terminal String GRAFICABARRAS,DEFGLOBALES,GRAPIE,CORCHETE_A,CORCHETE_C,DOLAR,COMA;
 
 //------> Declaración de no terminales
 non terminal inicio;
@@ -54,8 +54,10 @@ non terminal lista_instr,instr_if,instr_while,instr_do,instr_for,instr_switch,in
 non terminal comparadores;
 non terminal instruccion,tipo_void_est ;
 non terminal expresion;
+non terminal lista_instr_est,instruccion_est,estadisticas,asignacion_est,asignar_est,expresion_est,tipo_get;
 
 //------> precedencia
+precedence left lista_instr_est,COMA ;
 precedence left AND,OR;
 precedence left IGUALIGUAL,DISTINTO;
 precedence left MAYOR,MENOR,MAYORIGUAL,MENORIGUAL;
@@ -87,6 +89,7 @@ instruccion::= tipo_if:val                                                      
     | impresion:val PUNTOYCOMA                      {: statpy.Parser.resultado= statpy.Parser.resultado+val.toString()+" \n" ; :}
     | error PUNTOYCOMA
 ;
+
 
 impresion ::= CONSOLE PUNTO WRITE PARENTESIS_A expresion:val PARENTESIS_C  
                         {: RESULT= "print("+ val.toString()+")";  :}
@@ -138,10 +141,10 @@ print_case::=CASE ENTERO:var DOSPUNTOS ID:val IGUAL ENTERO:var2 PUNTOYCOMA
 print_default::= DEFAULT DOSPUNTOS {: data.Info.ultimoCase++; statpy.Parser.resultado += data.Info.ultimoCase+": "; :}
 ; 
 tipo_dato::=INT:val                                         {:  :}
-                | DOUBLE:val                                {: :}
+                | DOUBLE:val                                {: RESULT = val; :}
                 | CHAR:val                                     {:  :}
                 | BOOL:val                                      {:  :}
-                | STRING:val                                   {: :}
+                | STRING:val                                   {: RESULT = val; :}
 ;
 tipo_void::= instr_void lista_instr LLAVE_C
 ;
@@ -181,6 +184,30 @@ expresion::= expresion:a MAS expresion:b                {: RESULT=a.toString()+"
         | TEXTOENTRECOMILLAS:val       {: RESULT = val; :}
         | TEXTOENTRECOMILLAS:val MAS expresion:a       {: RESULT =val.toString()+" , "+a.toString(); :}
         | TCHAR: val                                    {: RESULT = val; :}
-
 ;
 
+tipo_void_est::= VOID estadisticas PARENTESIS_A PARENTESIS_C LLAVE_A lista_instr_est LLAVE_C 
+;
+estadisticas::= GRAFICABARRAS
+                        | GRAPIE
+                        | DEFGLOBALES
+;
+lista_instr_est ::= lista_instr_est instruccion_est
+        | instruccion_est
+;
+
+instruccion_est::= asignar_est PUNTOYCOMA
+;
+
+asignar_est::= tipo_dato ID IGUAL expresion_est
+                        | tipo_dato ID IGUAL tipo_get 
+                        | tipo_dato CORCHETE_A CORCHETE_C ID IGUAL LLAVE_A expresion_est LLAVE_C
+                        | tipo_dato CORCHETE_A CORCHETE_C ID IGUAL LLAVE_A tipo_get COMA expresion_est LLAVE_C
+;
+tipo_get::=DOLAR LLAVE_A ID COMA TEXTOENTRECOMILLAS COMA TEXTOENTRECOMILLAS LLAVE_C
+;
+expresion_est::= expresion_est COMA expresion_est
+                        | DECIMAL:val   {: RESULT = val; :}
+                        | ID:val                {: RESULT = val; :}
+                        | TEXTOENTRECOMILLAS:val    {: RESULT = val; :}
+;
