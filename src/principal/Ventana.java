@@ -7,6 +7,8 @@ package principal;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -20,8 +22,139 @@ public class Ventana extends javax.swing.JFrame {
     /**
      * Creates new form Ventana
      */
+    public static ArrayList<Object> funciones = new ArrayList<>();
     public Ventana() {
         initComponents();
+    }
+    private void recorrerFuncionesConVariables(){
+        for (int i = 0; i < funciones.size(); i++) {
+            Object[] funcionActual = (Object[]) funciones.get(i);
+            // recorrer variables
+            HashMap<String, String> variables = (HashMap<String, String>) funcionActual[1];
+            for (String key : variables.keySet()) {
+                String valor = variables.get(key);
+                System.out.println(key + " = " + valor);
+            }
+        }
+    }
+
+    private void recorrerFunciones() {
+        for (int i = 0; i < funciones.size(); i++) {
+            Object[] funcionActual = (Object[]) funciones.get(i);
+            System.out.println(funcionActual[0]);
+            String funcion = (String) funcionActual[0];
+            funcion = funcion.toLowerCase(getLocale());
+            if (funcion.contains("grafica")) {
+
+                System.out.println(funcion);
+                String Titulo = buscarVariable(funcion, "titulo");
+                String TituloX = buscarVariable(funcion, "titulox");
+                String TituloY = buscarVariable(funcion, "tituloy");
+                String valores = buscarVariable(funcion, "valores");
+                String ejex = buscarVariable(funcion, "ejex");
+
+                System.out.println(Titulo + "prueba");
+                System.out.println(TituloX + "prueba");
+                System.out.println(TituloY + "prueba");
+                System.out.println(valores + "prueba");
+                System.out.println(ejex + "prueba");
+
+                try {
+                    String[] valoresx = ejex.split(",");
+                    String[] valoresy = valores.split(",");
+                    System.out.println(valoresx.length);
+                    System.out.println(valoresy.length);
+                    valoresx = validarValores(valoresx);
+                    valoresy = validarValores(valoresy);
+                    System.out.println(valoresx);
+                    System.out.println(valoresy);
+                    System.out.println(valoresx.length);
+                    System.out.println(valoresy.length);
+                    double[] valoressy = new double[valoresy.length];
+
+                    for (int k = 0; k < valoresy.length; k++) {
+                        System.out.println(k + "k");
+                        valoressy[k] = Double.parseDouble(valoresy[k]);
+                    }
+
+                    switch (funcion) {
+                        case "graficapie":
+                            data.Graficar.Pie(Titulo, TituloX, TituloY, valoressy, valoresx);
+                            break;
+                        case "graficabarras":
+                            data.Graficar.Barras(Titulo, TituloX, TituloY, valoressy, valoresy);
+                            break;
+                        default:
+                            break;
+                    }
+
+                } catch (Exception e) {
+                    System.out.println("Error al graficar");
+                    System.out.println(e);
+                }
+            }
+        }
+    }
+
+    private String[] validarValores(String[] valores) {
+        for (int i = 0; i < valores.length; i++) {
+            String valor = valores[i];
+            System.out.println(valor + "valor");
+            if (valor.contains("cup_id")) {
+                valor = valor.replace("cup_id", "");
+                valor = buscarVariable("definirglobales", valor);
+                valores[i] = valor;
+                System.out.println(valor + "valor 2");
+            }
+        }
+        return valores;
+    }
+
+    private String buscarVariable(String funcion, String nombre) {
+        for (int i = 0; i < funciones.size(); i++) {
+            Object[] funcionActual = (Object[]) funciones.get(i);
+            System.out.println(funcionActual[0] + " = buscando " + funcion);
+            if (funcionActual[0].equals(funcion)) {
+                HashMap<String, String> variables = (HashMap<String, String>) funcionActual[1];
+                for (String key : variables.keySet()) {
+                    if (key.equals(nombre)) {
+                        String valor = variables.get(key);
+                        if (!valor.contains(",")) {
+                            if (valor.contains("cup_id")) {
+                                // quitar cup_id
+                                valor = valor.replace("cup_id", "");
+                                return buscarVariable("definirglobales", valor);
+                            }
+                        }
+                        return valor;
+                    }
+                }
+            }
+        }
+        return "0";
+    }
+
+    public static void agregarVariable(String funcion, String nombre, String valor) {
+        boolean existe = false;
+        for (int i = 0; i < funciones.size(); i++) {
+            Object[] funcionActual = (Object[]) funciones.get(i);
+            if (funcionActual[0].equals(funcion)) {
+                HashMap<String, String> variables = (HashMap<String, String>) funcionActual[1];
+                variables.put(nombre, valor);
+                funcionActual[1] = variables;
+                funciones.set(i, funcionActual);
+                existe = true;
+                break;
+            }
+        }
+
+        if (!existe) {
+            HashMap<String, String> variables = new HashMap<>();
+            variables.put(nombre, valor);
+            Object[] funcionActual = { funcion, variables };
+            funciones.add(funcionActual);
+        }
+
     }
 
     /**
@@ -266,6 +399,7 @@ public class Ventana extends javax.swing.JFrame {
             statpy.Parser.resultado = "";
             principal.Main.analizar(data);
             jTextArea2.setText(statpy.Parser.resultado);
+            this.recorrerFunciones();
             
         } else if (analizador == "Json"){
             

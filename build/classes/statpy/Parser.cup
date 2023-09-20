@@ -11,7 +11,8 @@ import java_cup.runtime.*;
 parser code 
 {:
     public static String resultado = ""; 
-
+    public String funcion = "";
+    public String valuee = "";
     public void syntax_error(Symbol s)
     {
         System.err.println("Error Sintactico: "+ s.value + " - Fila: " + s.right + " - Columna: " + s.left + ". Recuperado" );
@@ -54,7 +55,8 @@ non terminal lista_instr,instr_if,instr_while,instr_do,instr_for,instr_switch,in
 non terminal comparadores;
 non terminal instruccion,tipo_void_est ;
 non terminal expresion;
-non terminal lista_instr_est,instruccion_est,estadisticas,asignacion_est,asignar_est,expresion_est,tipo_get;
+non terminal lista_instr_est,instruccion_est,estadisticas,asignacion_est,asignar_est,expresion_est,tipo_get,tipo_dato_est,tipo_declaracion,expresion_val,expresion_list;
+non terminal expreision_list_valores;
 
 //------> precedencia
 precedence left lista_instr_est,COMA ;
@@ -146,6 +148,7 @@ tipo_dato::=INT:val                                         {:  :}
                 | BOOL:val                                      {:  :}
                 | STRING:val                                   {: RESULT = val; :}
 ;
+
 tipo_void::= instr_void lista_instr LLAVE_C
 ;
 instr_void::= VOID:val MAIN:var PARENTESIS_A PARENTESIS_C LLAVE_A {: statpy.Parser.resultado +="def"+" " +var.toString()+ "():\n"; :}
@@ -189,8 +192,9 @@ expresion::= expresion:a MAS expresion:b                {: RESULT=a.toString()+"
 tipo_void_est::= VOID estadisticas PARENTESIS_A PARENTESIS_C LLAVE_A lista_instr_est LLAVE_C 
 ;
 estadisticas::= GRAFICABARRAS
-                        | GRAPIE
-                        | DEFGLOBALES
+{: parser.funcion = "graficabarras"; :}
+                        | GRAPIE {: parser.funcion = "graficapie"; :}
+                        | DEFGLOBALES {: parser.funcion = "definirglobales"; :}
 ;
 lista_instr_est ::= lista_instr_est instruccion_est
         | instruccion_est
@@ -198,16 +202,55 @@ lista_instr_est ::= lista_instr_est instruccion_est
 
 instruccion_est::= asignar_est PUNTOYCOMA
 ;
+tipo_declaracion::= tipo_dato_est
+;
+tipo_dato_est ::=INT {: RESULT = "int"; :}
+                        | DOUBLE {: RESULT = "double"; :}
+                        | CHAR {: RESULT = "char"; :}
+                        | BOOL {: RESULT = "bool"; :}
+                        | STRING {: RESULT = "string"; :}
+                        ;
 
-asignar_est::= tipo_dato ID IGUAL expresion_est
-                        | tipo_dato ID IGUAL tipo_get 
-                        | tipo_dato CORCHETE_A CORCHETE_C ID IGUAL LLAVE_A expresion_est LLAVE_C
-                        | tipo_dato CORCHETE_A CORCHETE_C ID IGUAL LLAVE_A tipo_get COMA expresion_est LLAVE_C
+asignar_est::= tipo_declaracion:tipo ID:id IGUAL expresion_val:valor
+                        {:
+                                principal.Ventana.agregarVariable(parser.funcion, id.toLowerCase(), valor.toString());
+                        :}
+                        | tipo_declaracion:tipo ID:id COMA
+                        {:
+                                principal.Ventana.agregarVariable(parser.funcion, id.toLowerCase(), "");	
+                        :}
+         
 ;
-tipo_get::=DOLAR LLAVE_A ID COMA TEXTOENTRECOMILLAS COMA TEXTOENTRECOMILLAS LLAVE_C
+
+tipo_get::=DOLAR LLAVE_A ID COMA TEXTOENTRECOMILLAS:txtl COMA TEXTOENTRECOMILLAS:txtr LLAVE_C
+{:              parser.valuee= "0";
+                data.Info.listaVariables.forEach((k, v) -> {
+                    if (k.equals(txtr.toLowerCase())) {
+                        parser.valuee = v;
+                    }
+                });
+
+                RESULT = parser.valuee;
+:}
 ;
-expresion_est::= expresion_est COMA expresion_est
-                        | DECIMAL:val   {: RESULT = val; :}
-                        | ID:val                {: RESULT = val; :}
-                        | TEXTOENTRECOMILLAS:val    {: RESULT = val; :}
+
+expresion_val::=  DECIMAL:val {: RESULT = val; :}
+                        | ID:val {: RESULT = "cup_id" + val; :}
+                        | TEXTOENTRECOMILLAS:val {: RESULT = val; :}
+                        | tipo_get:val {: RESULT = val; :}
+                        | expresion_list:val {: RESULT = val; :}
 ;
+
+expresion_list ::= LLAVE_A expreision_list_valores:list LLAVE_C
+            {:
+                RESULT = list;
+            :};
+
+expreision_list_valores ::= expresion_val:ve
+            {:
+                RESULT = ve;
+            :}
+            | expreision_list_valores:list COMA expresion_val:ve
+            {:
+                RESULT = list + "," + ve;
+            :};
